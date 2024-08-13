@@ -10,8 +10,10 @@
   },
   "dependencies": {
     "@ant-design/icons": "^5.4.0",
+    "@fontsource/montserrat": "^5.0.18",
     "@octokit/rest": "^21.0.1",
     "antd": "^5.20.1",
+    "better-sqlite3": "^11.1.2",
     "next": "14.2.5",
     "node-cache": "^5.1.2",
     "react": "^18",
