@@ -8,7 +8,7 @@ This project is an open-source tool that analyzes the influence of users who hav
 |:--:|:--:|
 | *Enter a Repo URL to Start Getting the Data* | *After Completing the Analysis, View the Results* |
 
-If you just want to try it out, you can access the live version at [https://influential-stars.com/(https://influential-stars.com/).
+If you just want to try it out, you can access the live version at [influential-stars.com](https://influential-stars.com/).
 
 My GitHub API key is used in the live version, so it will likely be pretty rate limited (I've attempted to deal with this gracefully, but if a lot of people try to use it with repos that have a lot of stars, it's going to get overwhelmed pretty quickly). If anyone who works at GitHub/Microsoft is reading this, I would love to get a higher rate limit for this project or some special API key I can use for it, since I think this is a pretty useful tool for people who make open source software and want to better understand their user base. In the meantime, you can also supply your own GitHub API key in the input field to get around the rate limiting (see instructions below for how to generate one).
 
