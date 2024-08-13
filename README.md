@@ -14,6 +14,10 @@ This project is an open-source tool that analyzes the influence of users who hav
 - Allows users to securely use their own GitHub API keys
 - Provides a responsive web interface with real-time progress updates
 
+| ![Screenshot 1](https://raw.githubusercontent.com/Dicklesworthstone/most-influential-github-repo-stars/main/screenshot_1.webp) | ![Screenshot 2](https://raw.githubusercontent.com/Dicklesworthstone/most-influential-github-repo-stars/main/screenshot_2.webp) |
+|:--:|:--:|
+| *Enter a Repo URL to Start Getting the Data* | *After Completing the Analysis, View the Results* |
+
 ## How It Works
 
 1. **Data Collection**: The application fetches stargazers and forkers of the specified repository using the GitHub API.
