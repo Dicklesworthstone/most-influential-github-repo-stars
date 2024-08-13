@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Avatar, Card, Input, Table, Tag, Tooltip, Spin, Alert, Statistic, message, Typography, Modal, Button, Progress, Select } from 'antd';
+import Head from 'next/head';
+import { Avatar, Card, Input, Table, Tag, Tooltip, Spin, Alert, Statistic, message, Typography, Modal, Button, Progress, Select, Row, Col } from 'antd';
 import { GithubOutlined, StarOutlined, ForkOutlined, UserOutlined, SettingOutlined } from '@ant-design/icons';
 import '@fontsource/montserrat';  // Import Montserrat font
 const { Title, Paragraph, Text, Link } = Typography;
@@ -161,6 +162,7 @@ export default function Home() {
     }
   };
 
+  
   const columns = [
     {
       title: 'User',
@@ -211,110 +213,120 @@ export default function Home() {
       ),
     },
   ];
-  
+
   return (
-    <div className="min-h-screen bg-gray-100 py-4 flex flex-col items-center justify-center">
-      {/* Header Section */}
-      <div className="w-full max-w-4xl mb-4">
-        <Typography>
-          <Text>
-            Made by <Link href="https://github.com/Dicklesworthstone" target="_blank">Jeffrey Emanuel</Link>. See <Link href="https://github.com/Dicklesworthstone/most-influential-github-repo-stars" target="_blank">Source Code</Link>
-          </Text>
-        </Typography>
-      </div>
-
-      <Card className="w-full max-w-4xl" title={<Title level={2} className="text-4xl">Most Influential GitHub Repo Stars</Title>}>
-        <form onSubmit={handleSubmit} className="mb-8">
-          <Input.Search
-            placeholder="Enter GitHub Repo URL"
-            value={repoUrl}
-            onChange={(e) => setRepoUrl(e.target.value)}
-            onSearch={analyzeRepository}
-            enterButton="Analyze"
-            size="large"
-            loading={loading}
-          />
-        </form>
-
-        <div className="mb-4">
-          <Button type="link" onClick={() => setShowApiKeyOption(!showApiKeyOption)}>
-            Having trouble? Click here to use your own GitHub API Key
-          </Button>
-          {showApiKeyOption && (
-            <div className="mt-2">
-              <Text type="secondary">
-                You can securely use your own GitHub API Key. It's never sent to our server and is kept securely in your own browser.
-              </Text>
-              <Button type="primary" icon={<SettingOutlined />} onClick={() => setShowApiKeyModal(true)} className="mt-2">
-                Set GitHub API Key
-              </Button>
-            </div>
-          )}
+    <>
+      <Head>
+        <title>Influential Stars: Who Starred Your Repo?</title>
+      </Head>
+      <div className="min-h-screen bg-gray-100 py-4 flex flex-col items-center justify-center">
+        {/* Header Section */}
+        <div className="w-full max-w-4xl mb-4">
+          <Typography>
+            <Text>
+              Made by <Link href="https://github.com/Dicklesworthstone" target="_blank">Jeffrey Emanuel</Link>. See <Link href="https://github.com/Dicklesworthstone/most-influential-github-repo-stars" target="_blank">Source Code</Link>
+            </Text>
+          </Typography>
         </div>
 
-        {error && <Alert message={error} type="error" showIcon className="mb-4" />}
+        <Card className="w-full max-w-4xl" title={<Title level={2} className="text-2xl md:text-4xl text-center leading-tight break-words">Most Influential GitHub Repo Stars</Title>}>
+          <form onSubmit={handleSubmit} className="mb-8">
+            <Input.Search
+              placeholder="Enter GitHub Repo URL"
+              value={repoUrl}
+              onChange={(e) => setRepoUrl(e.target.value)}
+              onSearch={analyzeRepository}
+              enterButton="Analyze"
+              size="large"
+              loading={loading}
+            />
+          </form>
 
-        {loading && (
-          <div className="text-center mb-4">
-            <Spin size="large" />
-            <Progress percent={progress} status="active" />
-            <p className="mt-2">{statusMessage || 'Analyzing influential stars...'}</p>
-            {rateLimitWarning && (
-              <Alert message="Rate limit reached. Waiting before retrying..." type="warning" showIcon className="mt-2" />
+          <div className="mb-4">
+            <Button type="link" onClick={() => setShowApiKeyOption(!showApiKeyOption)}>
+              Having trouble? Click here to use your own GitHub API Key
+            </Button>
+            {showApiKeyOption && (
+              <div className="mt-2">
+                <Text type="secondary">
+                  You can securely use your own GitHub API Key. It's never sent to our server and is kept securely in your own browser.
+                </Text>
+                <Button type="primary" icon={<SettingOutlined />} onClick={() => setShowApiKeyModal(true)} className="mt-2">
+                  Set GitHub API Key
+                </Button>
+              </div>
             )}
           </div>
-        )}
 
-        {repoInfo && (
-          <Card className="mb-4">
-            <Statistic title="Repository" value={repoInfo.name} />
-            <p>{repoInfo.description}</p>
-            <div className="flex justify-around mt-4">
-              <Statistic title="Stars" value={repoInfo.stars} prefix={<StarOutlined />} />
-              <Statistic title="Forks" value={repoInfo.forks} prefix={<ForkOutlined />} />
+          {error && <Alert message={error} type="error" showIcon className="mb-4" />}
+
+          {loading && (
+            <div className="text-center mb-4">
+              <Spin size="large" />
+              <Progress percent={progress} status="active" />
+              <p className="mt-2">{statusMessage || 'Analyzing influential stars...'}</p>
+              {rateLimitWarning && (
+                <Alert message="Rate limit reached. Waiting before retrying..." type="warning" showIcon className="mt-2" />
+              )}
             </div>
-          </Card>
-        )}
+          )}
 
-        {influencers.length > 0 && (
-          <>
-            <Typography className="mb-4">
-              <Title level={4} className="text-center">
-                Most Influential GitHub Users
-              </Title>
-              <Paragraph className="text-center">
-                Here are the most influential GitHub users who have either starred or forked the selected repo,
-                ranked by their score:
-              </Paragraph>
-            </Typography>
-            <Table
-              dataSource={influencers}
-              columns={columns}
-              rowKey="login"
-              pagination={{
-                current: page,
-                pageSize: pageSize,
-                total: influencers.length,
-                onChange: (page) => setPage(page),
-              }}
-            />
-          </>
-        )}
-      </Card>
+          {repoInfo && (
+            <Card className="mb-4">
+              <Statistic title="Repository" value={repoInfo.name} />
+              <p>{repoInfo.description}</p>
+              <Row gutter={[16, 16]} className="mt-4">
+                <Col xs={12} sm={12} md={12} lg={12}>
+                  <Statistic title="Stars" value={repoInfo.stars} prefix={<StarOutlined />} />
+                </Col>
+                <Col xs={12} sm={12} md={12} lg={12}>
+                  <Statistic title="Forks" value={repoInfo.forks} prefix={<ForkOutlined />} />
+                </Col>
+              </Row>
+            </Card>
+          )}
 
-      <Modal
-        title="Set GitHub API Key"
-        open={showApiKeyModal}
-        onOk={handleApiKeySubmit}
-        onCancel={() => setShowApiKeyModal(false)}
-      >
-        <Input.Password
-          placeholder="Enter your GitHub API key"
-          value={apiKey}
-          onChange={(e) => setApiKey(e.target.value)}
-        />
-        <p className="mt-2">Your API key will be stored securely in your browser and not sent to our servers.</p>
-      </Modal>
-    </div>
+          {influencers.length > 0 && (
+            <>
+              <Typography className="mb-4">
+                <Title level={4} className="text-center">
+                  Most Influential GitHub Users
+                </Title>
+                <Paragraph className="text-center">
+                  Here are the most influential GitHub users who have either starred or forked the selected repo,
+                  ranked by their score:
+                </Paragraph>
+              </Typography>
+              <Table
+                dataSource={influencers}
+                columns={columns}
+                rowKey="login"
+                pagination={{
+                  current: page,
+                  pageSize: pageSize,
+                  total: influencers.length,
+                  onChange: (page) => setPage(page),
+                }}
+                scroll={{ x: '100%' }} // Enables horizontal scrolling on mobile
+              />
+            </>
+          )}
+        </Card>
+
+        <Modal
+          title="Set GitHub API Key"
+          open={showApiKeyModal}
+          onOk={handleApiKeySubmit}
+          onCancel={() => setShowApiKeyModal(false)}
+        >
+          <Input.Password
+            placeholder="Enter your GitHub API key"
+            value={apiKey}
+            onChange={(e) => setApiKey(e.target.value)}
+          />
+          <p className="mt-2">Your API key will be stored securely in your browser and not sent to our servers.</p>
+        </Modal>
+      </div>
+    </>
   );
 }
