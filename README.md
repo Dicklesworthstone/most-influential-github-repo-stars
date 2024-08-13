@@ -4,6 +4,10 @@
 
 This project is an open-source tool that analyzes the influence of users who have starred or forked a given GitHub repository. It provides insights into the "importance" of these users based on their GitHub activity and follower count, helping repository owners understand the reach and impact of their projects.
 
+| ![Screenshot 1](https://raw.githubusercontent.com/Dicklesworthstone/most-influential-github-repo-stars/main/screenshot_1.webp) | ![Screenshot 2](https://raw.githubusercontent.com/Dicklesworthstone/most-influential-github-repo-stars/main/screenshot_2.webp) |
+|:--:|:--:|
+| *Enter a Repo URL to Start Getting the Data* | *After Completing the Analysis, View the Results* |
+
 ## Features
 
 - Analyzes stargazers and forkers of a specified GitHub repository
@@ -13,10 +17,6 @@ This project is an open-source tool that analyzes the influence of users who hav
 - Handles GitHub API rate limiting gracefully
 - Allows users to securely use their own GitHub API keys
 - Provides a responsive web interface with real-time progress updates
-
-| ![Screenshot 1](https://raw.githubusercontent.com/Dicklesworthstone/most-influential-github-repo-stars/main/screenshot_1.webp) | ![Screenshot 2](https://raw.githubusercontent.com/Dicklesworthstone/most-influential-github-repo-stars/main/screenshot_2.webp) |
-|:--:|:--:|
-| *Enter a Repo URL to Start Getting the Data* | *After Completing the Analysis, View the Results* |
 
 ## How It Works
 
