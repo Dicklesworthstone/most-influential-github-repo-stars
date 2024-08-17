@@ -59,14 +59,14 @@ export async function POST(request) {
 
       console.log('Request body:', body);
 
-      const { repoUrl } = body;
+      let { repoUrl } = body;
       console.log('Repo URL:', repoUrl);
 
       // Remove trailing slash if present
       if (repoUrl.endsWith('/')) {
         repoUrl = repoUrl.slice(0, -1);
       }
-      
+
       if (!repoUrl) {
         console.error('Repository URL is missing');
         await sendUpdate('Repository URL is required', 100);
