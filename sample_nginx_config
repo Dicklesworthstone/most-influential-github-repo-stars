@@ -1,0 +1,129 @@
+# nginx config for reverse proxying to node app:
+# sudo nano /etc/nginx/sites-available/influential-stars.com
+
+# Redirect HTTP to HTTPS
+server {
+    listen 80;
+    listen [::]:80;
+    server_name influential-stars.com www.influential-stars.com;
+    return 301 https://$host$request_uri;
+}
+
+# HTTPS server
+server {
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
+    server_name influential-stars.com www.influential-stars.com;
+
+    # SSL certificate configuration
+    ssl_certificate /etc/letsencrypt/live/influential-stars.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/influential-stars.com/privkey.pem;
+    include /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+
+    # HSTS (comment out if you encounter issues)
+    add_header Strict-Transport-Security "max-age=63072000" always;
+
+    # Other security headers
+    add_header X-Frame-Options DENY;
+    add_header X-Content-Type-Options nosniff;
+    add_header X-XSS-Protection "1; mode=block";
+
+    # Optimize file sending
+    tcp_nopush on;
+    tcp_nodelay on;
+    sendfile on;
+
+    # Client body size
+    client_max_body_size 20M;
+
+    # Gzip compression
+    gzip on;
+    gzip_vary on;
+    gzip_proxied any;
+    gzip_comp_level 6;
+    gzip_types text/plain text/css text/xml application/json application/javascript application/rss+xml application/atom+xml image/svg+xml;
+
+location / {
+    proxy_pass http://localhost:3000;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection 'upgrade';
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_cache_bypass $http_upgrade;
+
+    # Disable response buffering to enable real-time updates
+    proxy_buffering off;
+    proxy_request_buffering off;
+}
+
+location /_next/static/ {
+    alias /home/ubuntu/most-influential-github-repo-stars/.next/static/;
+    expires 365d;
+    access_log off;
+    add_header Cache-Control "public, max-age=31536000, immutable";
+}
+
+location ~* /_next/static/media/.*\.(woff|woff2|eot|ttf|otf)$ {
+    root /home/ubuntu/most-influential-github-repo-stars;
+    try_files $uri =404;
+    expires 365d;
+    access_log off;
+    add_header Cache-Control "public, max-age=31536000, immutable";
+
+    # Enable CORS for font files
+    add_header Access-Control-Allow-Origin *;
+    add_header Access-Control-Allow-Methods GET;
+    add_header Access-Control-Allow-Headers *;
+}
+
+location ~* ^/(css|js)/ {
+    root /home/ubuntu/most-influential-github-repo-stars/.next;
+    expires 365d;
+    access_log off;
+    add_header Cache-Control "public, max-age=31536000, immutable";
+}
+
+location = /_next/static/media/a34f9d1faa5f3315-s.p.woff2 {
+    alias /home/ubuntu/most-influential-github-repo-stars/.next/static/media/a34f9d1faa5f3315-s.p.woff2;
+    add_header Content-Type "font/woff2";
+    expires 365d;
+    access_log off;
+    add_header Cache-Control "public, max-age=31536000, immutable";
+}
+
+location ~* \.(ico|png|jpg|jpeg|gif|svg|ttf|eot)$ {
+    root /home/ubuntu/most-influential-github-repo-stars/public;
+    try_files $uri $uri/ /home/ubuntu/most-influential-github-repo-stars/.next/static/media/$uri =404;
+    expires 365d;
+    access_log off;
+    add_header Cache-Control "public, max-age=31536000, immutable";
+}
+
+location = /favicon.ico {
+    alias /home/ubuntu/most-influential-github-repo-stars/public/favicon.ico;
+    access_log off;
+    log_not_found off;
+}
+
+    location = /robots.txt {
+        allow all;
+        log_not_found off;
+        access_log off;
+    }
+
+    # Add a location block for handling WebSocket connections (if needed)
+    location /api/socket {
+        proxy_pass http://localhost:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+    }
+
+    # Logging (using default format)
+    access_log /var/log/nginx/access.log;
+    error_log /var/log/nginx/error.log;
+}
