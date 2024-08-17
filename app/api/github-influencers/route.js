@@ -3,9 +3,9 @@ import Database from 'better-sqlite3';
 import { fileURLToPath } from 'url';
 import path from 'path';
 
-const MAX_USERS_TO_PROCESS = 3000;
+const MAX_USERS_TO_PROCESS = 1000;
 const CONCURRENCY_LIMIT = 30;
-const CACHE_TTL = 10*7200000; // 20 hours in milliseconds
+const CACHE_TTL = 100*7200000; // 200 hours in milliseconds
 const RATE_LIMIT_DELAY = 15000; // 15 second delay for rate limiting
 
 const __filename = fileURLToPath(import.meta.url);
@@ -62,6 +62,11 @@ export async function POST(request) {
       const { repoUrl } = body;
       console.log('Repo URL:', repoUrl);
 
+      // Remove trailing slash if present
+      if (repoUrl.endsWith('/')) {
+        repoUrl = repoUrl.slice(0, -1);
+      }
+      
       if (!repoUrl) {
         console.error('Repository URL is missing');
         await sendUpdate('Repository URL is required', 100);
@@ -198,7 +203,7 @@ function cacheUser(login, data) {
   stmt.run(login, JSON.stringify(data), Date.now());
 }
 
-async function fetchWithRateLimitHandling(fetchFunction, sendUpdate, maxRetries = 3) {
+async function fetchWithRateLimitHandling(fetchFunction, sendUpdate, maxRetries = 25) {
   for (let i = 0; i < maxRetries; i++) {
     try {
       return await fetchFunction();
